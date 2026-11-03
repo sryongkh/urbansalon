@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SalonRepository extends JpaRepository<Salon, Long> {
-    Salon findByOwnerId(Long id);
+    Salon findFirstByOwnerIdOrderByIdAsc(Long id);
 
     @Query("select s from Salon s where" +
             "(lower(s.city) like lower(concat('%', :keyword, '%')) OR " +

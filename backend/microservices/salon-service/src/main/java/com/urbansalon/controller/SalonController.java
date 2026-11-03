@@ -6,8 +6,10 @@ import com.urbansalon.payload.dto.SalonDTO;
 import com.urbansalon.payload.dto.UserDTO;
 import com.urbansalon.service.SalonService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -68,15 +70,12 @@ public class SalonController {
         return ResponseEntity.ok(salonDTOS);
     }
 
-    @GetMapping("/owner/{salonId}")
-    public ResponseEntity<SalonDTO> getSalonByOwnerId(@PathVariable Long salonId) throws Exception {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-
-        Salon salon = salonService.getSalonByOwnerId(userDTO.getId());
-
-        SalonDTO salonDTO = SalonMapper.mapToDTO(salon);
-
-        return ResponseEntity.ok(salonDTO);
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<SalonDTO> getSalonByOwnerId(@PathVariable Long ownerId) {
+        Salon salon = salonService.getSalonByOwnerId(ownerId);
+        if (salon == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Salon not found");
+        }
+        return ResponseEntity.ok(SalonMapper.mapToDTO(salon));
     }
 }

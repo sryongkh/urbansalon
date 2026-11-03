@@ -1,42 +1,40 @@
 # UrbanSalon
 
-UrbanSalon is a modern, full-featured salon management platform designed to streamline operations for salons of all sizes. With robust backend services, a sleek frontend, real-time notifications, and secure payment integration, UrbanSalon delivers a seamless experience for both salon owners and customers.
+UrbanSalon is an early Spring Boot backend for a salon booking platform.
 
-## 🚀 Features
+## Project status
 
-- User authentication & authorization (Keycloak, JWT)
-- Real-time notifications for bookings & updates (RabbitMQ, WebSocket)
-- Powerful admin and user dashboards
-- Secure and reliable payment processing (Razorpay & Stripe)
-- Responsive, intuitive user interface
-- Containerized deployment for easy scalability
+| Component | Current state |
+| --- | --- |
+| User service | Basic user API |
+| Salon service | Create, update, list, and search salons |
+| Category service | List, create, and delete salon categories |
+| Service offering | Spring Boot scaffold |
+| Booking and customer-facing UI | Pending |
+| Keycloak authentication and owner authorization | Pending. Salon and category writes use fixed development IDs |
+| Payments and real-time notifications | Pending |
 
-## 🛠️ Tech Stack
+## Run locally
 
-### 💻 Backend Development
+Install JDK 17. The Maven wrapper downloads Maven on the first run. To start the salon API with a temporary H2 database, run:
 
-- **Spring Boot:** Powerful backend APIs and microservices
-- **Keycloak:** Secure authentication and authorization
-- **JWT:** Token-based security protocols
-- **MySQL:** Efficient data storage and management
-- **RabbitMQ:** Real-time, event-driven communication
-- **WebSocket:** Seamless real-time notifications
+```sh
+cd backend/microservices/salon-service
+./mvnw spring-boot:run -Dspring-boot.run.profiles=demo
+```
 
-### 🎨 Frontend Development
+The `demo` profile binds to loopback. Its data resets when the application stops. Keep these development APIs on a trusted machine while authentication is pending.
 
-- **React:** Responsive and dynamic user interfaces
-- **Redux:** State management
-- **Formik:** Robust form building and validation
-- **Axios:** Clean and efficient API integration
+In another terminal, create and list a salon:
 
-### ⚙️ DevOps Essentials
+```sh
+curl -fsS http://127.0.0.1:5002/api/salons \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"UrbanSalon","address":"10 Main Road","phoneNumber":"020000000","email":"salon@example.com","city":"Bangkok","openTime":"09:00","closeTime":"18:00"}'
 
-- **Docker:** Containerized application deployment
+curl -fsS http://127.0.0.1:5002/api/salons
+```
 
-### 💵 Payment Integration
+Use the same Maven command from the user or category service directory to start those APIs on ports 5001 and 5003. With the default profile, these three services expect MySQL on localhost. Create the schemas listed in their `application.properties` files and set `DB_PASSWORD` and, if needed, `DB_USERNAME`.
 
-- **Razorpay & Stripe:** Secure and reliable payment gateways
-
-
-
-
+Run `./mvnw test` from any service directory. The application tests use the local database profile.
